@@ -35,6 +35,11 @@ rl.question(
 
     rl.question(chalk.cyan("Enter your username: "), (username) => {
       socket.emit("joinChat", username);
+      try {
+        fs.writeFileSync(".last_server", serverUrl);
+      } catch (err) {
+        console.log(chalk.red("⚠️ Could not save last server."), err.message);
+      }
       console.log(chalk.green("\nConnected! Type your messages below:"));
       console.log(chalk.gray("Type /exit to leave the chat.\n"));
 
