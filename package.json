@@ -1,6 +1,6 @@
 {
   "name": "cmdchatjs",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Command-line chat using Node.js, Socket.IO, and MongoDB",
   "main": "cmdchat.js",
   "type": "module",

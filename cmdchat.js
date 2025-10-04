@@ -2,14 +2,20 @@
 import { execSync } from "child_process";
 import { Command } from "commander";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const program = new Command();
 
 program
   .name("cmdchat")
   .description("CMDChatJS — CLI chat using Node.js & Socket.IO")
-  .version("1.0.0");
+  .version("1.0.5");
 
+// 🧱 Install dependencies
 program
   .command("install")
   .description("Install dependencies")
@@ -18,15 +24,35 @@ program
     execSync("npm install", { stdio: "inherit" });
   });
 
+// 🟢 Connect command with optional URL
 program
-  .command("connect")
-  .description("Connect to chat")
-  .option("--server <url>", "Specify server URL (default: localhost:5000)")
-  .action((options) => {
-    const serverUrl = options.server || "http://localhost:5000";
-    fs.writeFileSync(".last_server", serverUrl);
-    console.log(`Connecting to chat server: ${serverUrl}`);
-    execSync(`node client/client.js ${serverUrl}`, { stdio: "inherit" });
+  .command("connect [serverUrl]")
+  .description("Connect to chat (default: https://cmdchatjs.onrender.com)")
+  .action((serverUrl) => {
+    const url = serverUrl || "https://cmdchatjs.onrender.com";
+    fs.writeFileSync(".last_server", url);
+
+    // ✅ Use absolute path to your package's client.js
+    const clientPath = path.join(__dirname, "client", "client.js");
+    console.log(`Connecting to chat server: ${url}`);
+    execSync(`node "${clientPath}" ${url}`, { stdio: "inherit" });
+  });
+
+// 🩵 Shorthand for quick connect
+program
+  .argument("[serverUrl]", "Quick connect without 'connect' command")
+  .action((serverUrl) => {
+    if (!serverUrl) {
+      console.log("Usage: cmdchat connect [serverUrl]");
+      return;
+    }
+
+    const url = serverUrl || "https://cmdchatjs.onrender.com";
+    fs.writeFileSync(".last_server", url);
+
+    const clientPath = path.join(__dirname, "client", "client.js");
+    console.log(`Connecting to chat server: ${url}`);
+    execSync(`node "${clientPath}" ${url}`, { stdio: "inherit" });
   });
 
 program.parse(process.argv);
