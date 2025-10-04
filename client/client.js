@@ -4,7 +4,7 @@ import readline from "readline";
 import chalk from "chalk";
 import fs from "fs";
 
-let serverUrl = process.argv[2] || "http://localhost:5000";
+let serverUrl = process.argv[2] || "https://cmdchatjs.onrender.com";
 try {
   if (!process.argv[2] && fs.existsSync(".last_server")) {
     serverUrl = fs.readFileSync(".last_server", "utf8").trim();
